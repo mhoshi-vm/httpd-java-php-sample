@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Twitter Wordcloud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clarity-ui/0.10.28/clarity-ui.min.css"/>
+</head>
+<body>
+
+<header class="header-6 header">
+    <div class="branding">
+        <a class="logo-and-title" href="/">
+            <span class="title">Java/PHP sample</span>
+        </a>
+    </div>
+    <div class="header-nav">
+        <a class="nav-link nav-text" href="index.html">Java</a>
+        <a class="nav-link nav-text" href="php.html">PHP</a>
+    </div>
+
+</header>
+
+<div style="margin-left : 1em; margin-right : 1em ;" class="container">
+    <table id="example" class="table">
+        <thead>
+        <tr>
+            <th class="left">ID</th>
+            <th class="left">Name</th>
+        </tr>
+        </thead>
+        <tbody id="list-list"></tbody>
+    </table>
+</div>
+
+<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" language="javascript"
+        src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.11.1/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#tableSwapi").dataTable();
+
+        $.ajax({
+            url: '/java',
+            type: 'get',
+            dataType: 'json',
+            success: function (result) {
+                let daftar = result;
+                var html = '';
+                $.each(daftar, function (i, data) {
+                    console.log(data.name);
+                    html += `<tr>
+                                        <td class="left"> ` + data.id + `</td>
+                                        <td class="left">` + data.name + `</td>
+                                    </tr>`;
+
+                    //This is selector of my <tbody> in my table
+                    $("#list-list").html(html);
+                });
+            }
+        });
+    })
+
+
+</script>
+</body>
+</html>
