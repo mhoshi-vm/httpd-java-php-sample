@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-frontend
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
+  labels:
+    apps.tanzu.vmware.com/workload-type: server
+    app.kubernetes.io/component: run
+    carto.run/workload-name: httpd-frontend
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: run
+      apps.tanzu.vmware.com/workload-type: server
+      carto.run/workload-name: httpd-frontend
+  template:
+    metadata:
+      annotations:
+        conventions.carto.run/applied-conventions: appliveview-sample/app-live-view-appflavour-check
+        developer.conventions/target-containers: workload
+      labels:
+        app.kubernetes.io/component: run
+        apps.tanzu.vmware.com/workload-type: server
+        carto.run/workload-name: httpd-frontend
+    spec:
+      containers:
+        - env:
+            - name: PORT
+              value: "8080"
+            - name: JAVA_URL
+              value: http://java-api:8080
+            - name: PHP_URL
+              value: http://php-api:8080/api.php
+          image: harbor.lespaulstudioplus.info/library/httpd-frontend:latest
+          name: workload
+          resources: {}
+          securityContext:
+            runAsUser: 1000
+      serviceAccountName: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd-frontend
+  labels:
+    apps.tanzu.vmware.com/workload-type: server
+    app.kubernetes.io/component: run
+    carto.run/workload-name: httpd-frontend
+spec:
+  selector:
+    app.kubernetes.io/component: run
+    apps.tanzu.vmware.com/workload-type: server
+    carto.run/workload-name: httpd-frontend
+  ports:
+    - targetPort: 8080
+      port: 8080
+      name: http

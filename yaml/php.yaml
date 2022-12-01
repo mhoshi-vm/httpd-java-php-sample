@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-api
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
+  labels:
+    apps.tanzu.vmware.com/workload-type: server
+    app.kubernetes.io/component: run
+    carto.run/workload-name: php-api
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: run
+      apps.tanzu.vmware.com/workload-type: server
+      carto.run/workload-name: php-api
+  template:
+    metadata:
+      annotations:
+        conventions.carto.run/applied-conventions: appliveview-sample/app-live-view-appflavour-check
+        developer.conventions/target-containers: workload
+      labels:
+        app.kubernetes.io/component: run
+        apps.tanzu.vmware.com/workload-type: server
+        carto.run/workload-name: php-api
+    spec:
+      containers:
+        - env:
+            - name: PORT
+              value: "8080"
+            - name: DB_HOST
+              value: my-release-mariadb
+            - name: DB_USERNAME
+              value: root
+            - name: DB_NAME
+              value: my_database
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: mariadb-root-password
+                  name: my-release-mariadb
+          image:
+            harbor.lespaulstudioplus.info/library/php-api:latest
+          name: workload
+          resources: {}
+          securityContext:
+            runAsUser: 1000
+      serviceAccountName: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-api
+  labels:
+    apps.tanzu.vmware.com/workload-type: server
+    app.kubernetes.io/component: run
+    carto.run/workload-name: php-api
+spec:
+  selector:
+    app.kubernetes.io/component: run
+    apps.tanzu.vmware.com/workload-type: server
+    carto.run/workload-name: php-api
+  ports:
+    - targetPort: 8080
+      port: 8080
+      name: http
