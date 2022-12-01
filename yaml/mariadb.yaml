@@ -4,13 +4,11 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: my-release-mariadb
-  namespace: "default"
   labels:
     app.kubernetes.io/name: mariadb
     helm.sh/chart: mariadb-11.3.3
     app.kubernetes.io/instance: my-release
     app.kubernetes.io/managed-by: Helm
-  annotations:
 automountServiceAccountToken: false
 ---
 # Source: mariadb/templates/secrets.yaml
@@ -18,7 +16,6 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: my-release-mariadb
-  namespace: "default"
   labels:
     app.kubernetes.io/name: mariadb
     helm.sh/chart: mariadb-11.3.3
@@ -33,7 +30,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: my-release-mariadb
-  namespace: "default"
   labels:
     app.kubernetes.io/name: mariadb
     helm.sh/chart: mariadb-11.3.3
@@ -76,14 +72,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: my-release-mariadb
-  namespace: "default"
   labels:
     app.kubernetes.io/name: mariadb
     helm.sh/chart: mariadb-11.3.3
     app.kubernetes.io/instance: my-release
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: primary
-  annotations:
 spec:
   type: ClusterIP
   sessionAffinity: None
@@ -92,7 +86,6 @@ spec:
       port: 3306
       protocol: TCP
       targetPort: mysql
-      nodePort: null
   selector: 
     app.kubernetes.io/name: mariadb
     app.kubernetes.io/instance: my-release
@@ -103,7 +96,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: my-release-mariadb
-  namespace: "default"
   labels:
     app.kubernetes.io/name: mariadb
     helm.sh/chart: mariadb-11.3.3
@@ -135,8 +127,6 @@ spec:
       
       serviceAccountName: my-release-mariadb
       affinity:
-        podAffinity:
-          
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - podAffinityTerm:
@@ -149,7 +139,6 @@ spec:
                   - "default"
                 topologyKey: kubernetes.io/hostname
               weight: 1
-        nodeAffinity:
           
       securityContext:
         fsGroup: 1001
