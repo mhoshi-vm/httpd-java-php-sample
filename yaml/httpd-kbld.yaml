@@ -8,7 +8,7 @@ metadata:
         - resolved:
             tag: latest
             url: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend:latest
-        url: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:a2f8f5b82c9a489d45cdf6a347b49ec954b390fdc9c5c4f48b947752c44c6470
+        url: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:565702ea954db4171eda6105eba54e7859e4462c3b4bdad3b33f161de1100a0b
     ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
   labels:
     app.kubernetes.io/component: run
@@ -39,9 +39,15 @@ spec:
           value: http://java-api:8080
         - name: PHP_URL
           value: http://php-api:8080/api.php
-        image: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:a2f8f5b82c9a489d45cdf6a347b49ec954b390fdc9c5c4f48b947752c44c6470
+        image: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:565702ea954db4171eda6105eba54e7859e4462c3b4bdad3b33f161de1100a0b
         name: workload
-        resources: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 250m
+            memory: 64Mi
         securityContext:
           allowPrivilegeEscalation: false
           runAsUser: 1000
@@ -65,17 +71,19 @@ spec:
     apps.tanzu.vmware.com/workload-type: server
     carto.run/workload-name: httpd-frontend
 ---
-apiVersion: projectcontour.io/v1
-kind: HTTPProxy
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: httpd-frontend
 spec:
-  routes:
-  - services:
-    - name: httpd-frontend
-      port: 8080
-    timeoutPolicy:
-      idle: infinity
-      response: infinity
-  virtualhost:
-    fqdn: demo.dev.jra.vcfdemo.com
+  rules:
+  - host: demo.dev.jra.vcfdemo.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: httpd-frontend
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix

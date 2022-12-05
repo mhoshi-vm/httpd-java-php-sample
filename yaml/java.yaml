@@ -55,10 +55,16 @@ spec:
         ports:
         - containerPort: 8080
           protocol: TCP
-        resources: {}
         securityContext:
           allowPrivilegeEscalation: false
           runAsUser: 1000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
       serviceAccountName: default
 ---
 apiVersion: v1

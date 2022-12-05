@@ -35,10 +35,16 @@ spec:
           value: http://php-api:8080/api.php
         image: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend:latest
         name: workload
-        resources: {}
         securityContext:
           allowPrivilegeEscalation: false
           runAsUser: 1000
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
       serviceAccountName: default
 ---
 apiVersion: v1
@@ -59,17 +65,19 @@ spec:
     apps.tanzu.vmware.com/workload-type: server
     carto.run/workload-name: httpd-frontend
 ---
-apiVersion: projectcontour.io/v1
-kind: HTTPProxy
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: httpd-frontend
 spec:
-  routes:
-  - services:
-    - name: httpd-frontend
-      port: 8080
-    timeoutPolicy:
-      idle: infinity
-      response: infinity
-  virtualhost:
-    fqdn: demo.dev.jra.vcfdemo.com
+  rules:
+  - host: "demo.dev.jra.vcfdemo.com"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: httpd-frontend
+            port:
+              number: 8080

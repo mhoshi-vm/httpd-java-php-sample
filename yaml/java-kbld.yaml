@@ -9,7 +9,7 @@ metadata:
         - resolved:
             tag: latest
             url: harbor.shared.dev.jra.vcfdemo.com/library/java-api:latest
-        url: harbor.shared.dev.jra.vcfdemo.com/library/java-api@sha256:44609afc3bdb215f41a14b522f52ec292b0ba813d2e124f5f024f0c6c856ba81
+        url: harbor.shared.dev.jra.vcfdemo.com/library/java-api@sha256:1e97887ae730e00032d7824bbdb9dc00f64a68e8d8b5fd4d7aa5d5dfae56953d
     ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
   labels:
     app.kubernetes.io/component: run
@@ -56,12 +56,18 @@ spec:
             secretKeyRef:
               key: mariadb-root-password
               name: my-release-mariadb
-        image: harbor.shared.dev.jra.vcfdemo.com/library/java-api@sha256:44609afc3bdb215f41a14b522f52ec292b0ba813d2e124f5f024f0c6c856ba81
+        image: harbor.shared.dev.jra.vcfdemo.com/library/java-api@sha256:1e97887ae730e00032d7824bbdb9dc00f64a68e8d8b5fd4d7aa5d5dfae56953d
         name: workload
         ports:
         - containerPort: 8080
           protocol: TCP
-        resources: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
         securityContext:
           allowPrivilegeEscalation: false
           runAsUser: 1000
