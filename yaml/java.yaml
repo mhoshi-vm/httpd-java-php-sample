@@ -50,7 +50,7 @@ spec:
             secretKeyRef:
               key: mariadb-root-password
               name: my-release-mariadb
-        image: harbor.lespaulstudioplus.info/library/java-api:latest
+        image: harbor.shared.dev.jra.vcfdemo.com/library/java-api:latest
         name: workload
         ports:
         - containerPort: 8080

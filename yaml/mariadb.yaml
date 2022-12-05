@@ -141,7 +141,7 @@ spec:
               name: my-release-mariadb
         - name: MARIADB_DATABASE
           value: my_database
-        image: harbor.lespaulstudioplus.info/bitnami/mariadb:latest
+        image: harbor.shared.dev.jra.vcfdemo.com/bitnami/mariadb:latest
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:

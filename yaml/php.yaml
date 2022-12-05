@@ -41,7 +41,7 @@ spec:
             secretKeyRef:
               key: mariadb-root-password
               name: my-release-mariadb
-        image: harbor.lespaulstudioplus.info/library/php-api:latest
+        image: harbor.shared.dev.jra.vcfdemo.com/library/php-api:latest
         name: workload
         resources: {}
         securityContext:

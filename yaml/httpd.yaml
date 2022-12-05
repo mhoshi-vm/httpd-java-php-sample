@@ -33,7 +33,7 @@ spec:
           value: http://java-api:8080
         - name: PHP_URL
           value: http://php-api:8080/api.php
-        image: harbor.lespaulstudioplus.info/library/httpd-frontend:latest
+        image: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend:latest
         name: workload
         resources: {}
         securityContext:
