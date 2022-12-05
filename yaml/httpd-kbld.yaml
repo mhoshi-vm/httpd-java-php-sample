@@ -3,6 +3,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
+    kbld.k14s.io/images: |
+      - origins:
+        - resolved:
+            tag: latest
+            url: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend:latest
+        url: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:a2f8f5b82c9a489d45cdf6a347b49ec954b390fdc9c5c4f48b947752c44c6470
     ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
   labels:
     app.kubernetes.io/component: run
@@ -33,7 +39,7 @@ spec:
           value: http://java-api:8080
         - name: PHP_URL
           value: http://php-api:8080/api.php
-        image: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend:latest
+        image: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:a2f8f5b82c9a489d45cdf6a347b49ec954b390fdc9c5c4f48b947752c44c6470
         name: workload
         resources: {}
         securityContext:
