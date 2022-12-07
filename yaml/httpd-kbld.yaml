@@ -8,7 +8,7 @@ metadata:
         - resolved:
             tag: latest
             url: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend:latest
-        url: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:1be1354b6119b59ad28b16723be74f7830adb101e45e8a5e8750afb8824878da
+        url: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:1811ab28a4445bba13aab0015d3f6b86cb655b1db7a6ad80b465bfa1be9c39f0
     ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
   labels:
     app.kubernetes.io/component: run
@@ -39,7 +39,7 @@ spec:
           value: http://java-api:8080
         - name: PHP_URL
           value: http://php-api:8080/api.php
-        image: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:1be1354b6119b59ad28b16723be74f7830adb101e45e8a5e8750afb8824878da
+        image: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:1811ab28a4445bba13aab0015d3f6b86cb655b1db7a6ad80b465bfa1be9c39f0
         name: workload
         resources:
           limits:

@@ -9,7 +9,7 @@ metadata:
         - resolved:
             tag: latest
             url: harbor.shared.dev.jra.vcfdemo.com/library/php-api:latest
-        url: harbor.shared.dev.jra.vcfdemo.com/library/php-api@sha256:a6af094a9aca3868e5df24a545b13907f0d990a6bfb7e0bcd24856dce1123454
+        url: harbor.shared.dev.jra.vcfdemo.com/library/php-api@sha256:969ab5d7d788f98d639a6e3272ee85ce9c569540c7260748beee96348026086d
     ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
   labels:
     app.kubernetes.io/component: run
@@ -47,7 +47,7 @@ spec:
             secretKeyRef:
               key: mariadb-root-password
               name: my-release-mariadb
-        image: harbor.shared.dev.jra.vcfdemo.com/library/php-api@sha256:a6af094a9aca3868e5df24a545b13907f0d990a6bfb7e0bcd24856dce1123454
+        image: harbor.shared.dev.jra.vcfdemo.com/library/php-api@sha256:969ab5d7d788f98d639a6e3272ee85ce9c569540c7260748beee96348026086d
         name: workload
         resources:
           limits:
