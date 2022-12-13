@@ -1,0 +1,81 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: run
+    apps.tanzu.vmware.com/workload-type: server
+    carto.run/workload-name: httpd-frontend
+  name: httpd-frontend
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: run
+      apps.tanzu.vmware.com/workload-type: server
+      carto.run/workload-name: httpd-frontend
+  template:
+    metadata:
+      annotations:
+        conventions.carto.run/applied-conventions: appliveview-sample/app-live-view-appflavour-check
+        developer.conventions/target-containers: workload
+      labels:
+        app.kubernetes.io/component: run
+        apps.tanzu.vmware.com/workload-type: server
+        carto.run/workload-name: httpd-frontend
+    spec:
+      containers:
+      - env:
+        - name: PORT
+          value: "8080"
+        - name: JAVA_URL
+          value: http://java-api:8080
+        - name: PHP_URL
+          value: http://php-api:8080/api.php
+        image: harbor.shared.dev.jra.vcfdemo.com/library/httpd-frontend@sha256:58515a0a916f2d11938fbc9b4c1fe08dc80f3c39a1b83c4fbdf5688fd51a6623
+        name: workload
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 250m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 1000
+      serviceAccountName: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: run
+    apps.tanzu.vmware.com/workload-type: server
+    carto.run/workload-name: httpd-frontend
+  name: httpd-frontend
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/component: run
+    apps.tanzu.vmware.com/workload-type: server
+    carto.run/workload-name: httpd-frontend
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: httpd-frontend
+spec:
+  rules:
+  - host: demo.dev.jra.vcfdemo.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: httpd-frontend
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix

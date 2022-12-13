@@ -1,0 +1,86 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: run
+    apps.tanzu.vmware.com/workload-type: server
+    carto.run/workload-name: java-api
+  name: java-api
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: run
+      apps.tanzu.vmware.com/workload-type: server
+      carto.run/workload-name: java-api
+      conventions.apps.tanzu.vmware.com/framework: spring-boot
+  template:
+    metadata:
+      annotations:
+        boot.spring.io/version: 2.7.6
+        conventions.carto.run/applied-conventions: |-
+          spring-boot-convention/spring-boot
+          spring-boot-convention/spring-boot-graceful-shutdown
+          spring-boot-convention/spring-boot-web
+          appliveview-sample/app-live-view-appflavour-check
+        developer.conventions/target-containers: workload
+      labels:
+        app.kubernetes.io/component: run
+        apps.tanzu.vmware.com/workload-type: server
+        carto.run/workload-name: java-api
+        conventions.apps.tanzu.vmware.com/framework: spring-boot
+    spec:
+      containers:
+      - env:
+        - name: JAVA_TOOL_OPTIONS
+          value: -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mariadb://my-release-mariadb:3306/my_database
+        - name: SPRING_DATASOURCE_USERNAME
+          value: root
+        - name: SPRING_DATASOURCE_DRIVERCLASSNAME
+          value: org.mariadb.jdbc.Driver
+        - name: SPRING_SQL_INIT_MODE
+          value: always
+        - name: SPRING_SQL_INIT_CONTINUEONERROR
+          value: "true"
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mariadb-root-password
+              name: my-release-mariadb
+        image: harbor.shared.dev.jra.vcfdemo.com/library/java-api@sha256:1232eda0f57ec7ef1c9272a5c93c15c4cd2c569176c8ef13ee7658e0a47ec414
+        name: workload
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "2"
+            memory: 1Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 1000
+      serviceAccountName: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: run
+    apps.tanzu.vmware.com/workload-type: server
+    carto.run/workload-name: java-api
+  name: java-api
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/component: run
+    apps.tanzu.vmware.com/workload-type: server
+    carto.run/workload-name: java-api
+    conventions.apps.tanzu.vmware.com/framework: spring-boot
